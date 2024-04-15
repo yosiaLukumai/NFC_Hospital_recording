@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const data = mongoose.Schema({
-    imgPath: {
+    reportPath: {
         type: String,
         required: true
     }

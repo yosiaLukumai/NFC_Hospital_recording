@@ -1,6 +1,6 @@
 const dataModel = require("./../models/data");
 const userModel = require("./../models/users");
-const picModel = require("./../models/pics")
+const picModel = require("../models/reports")
 const createOutput = require("../utils").createOutput;
 const io = require("./../index")
 const serveData = async (req, res) => {
