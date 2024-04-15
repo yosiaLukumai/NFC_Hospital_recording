@@ -1,12 +1,11 @@
 const mongoose = require("mongoose")
 
-//u3ldmau9lXwZoUje
 
 
 const connectDb = async () => {
     console.log("trying connecting to the database...");
     mongoose.set('strictQuery', false);
-    var connected = await mongoose.connect(connectionURL)
+    var connected = await mongoose.connect(`${process.env.CONN_URL}`)
     if (connected) {
         console.log("sucessfully connected to db")
     } else {

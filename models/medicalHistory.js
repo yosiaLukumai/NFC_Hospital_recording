@@ -1,9 +1,11 @@
 const mongoose = require("mongoose")
 const medicalHistory = mongoose.Schema({
+    patientID: {
+
+    },
     patientproblem: {
         type: String,
         required: true,
-        unique: true
     },
     
 }, {
