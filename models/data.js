@@ -5,8 +5,8 @@ const data = mongoose.Schema({
         type: String,
         required: true,
     },
-    annormality: {
-        type: String,
+    emergenecy: {
+        type: Boolean,
         required: true
     }
 

@@ -1,34 +1,30 @@
 const dataModel = require("./../models/data");
 const userModel = require("./../models/users");
-const picModel = require("../models/reports")
+const patientModel = require("../models/patients")
 const createOutput = require("../utils").createOutput;
 const io = require("./../index")
+const NotificationModel = require("../models/notification")
 const serveData = async (req, res) => {
     try {
         // let { temp, hum, size, deviceId } = req.body;
-        let { temp, hum, size } = req.body;
-        // query the device id to get userId
-        // check the type of the size of the plant
-        temp = String(temp);
-        hum = String(hum);
-        size = String(size);
+        let { emergenecy, cardID } = req.body;
 
-        
-
-        // const found = await userModel.findOne({ deviceId: String(deviceId) });
-        const found = await userModel.findOne({ deviceId: 1000 });
-        if (found) {
+        const found = await userModel.findOne({ cardID });
+        if (patient) {
             // save the data to the database
-            const saved = await dataModel.create({ userId: found?._id, temp, hum, size });
+            const saved = await dataModel.create({ cardID, emergenecy });
             if (saved) {
+                // emit the notification 
+
+
                 // fire a socket to notify there is new data...
-                io.Socket.emit("newData", saved)
+                // io.Socket.emit("newData", saved)
                 return res.json({ status: 1, message: "Data saved sucessfully" })
             } else {
                 return res.json({ status: 0, message: "Failed to save the data" })
             }
         } else {
-            return res.json({ status: 0, message: "Device not registered..." })
+            return res.json({ status: 0, message: "Card not registered..." })
         }
     } catch (error) {
         return res.json(createOutput(false, error.message, true));
@@ -39,8 +35,8 @@ const serveData = async (req, res) => {
 const serveGraphData = async (req, res) => {
     try {
         const deviceId = req.params.deviceId
-        const found = await userModel.findOne({ deviceId: String(deviceId) });
-        if (found) {
+        const patient = await userModel.findOne({ deviceId: String(deviceId) });
+        if (patient) {
             const fiveLastData = await dataModel.find({userId: found?._id}, "temp hum size createdAt", { createdAt: -1 }).limit(6).exec();
             return res.json(createOutput(true, fiveLastData))
         } else {
@@ -75,10 +71,6 @@ const fetchDataLogs = async (req, res) => {
         } else {
             return res.json(createOutput(true, "No such user", true));
         }
-
-
-
-
     } catch (error) {
         return res.json(createOutput(false, error.message, true));
     }

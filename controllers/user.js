@@ -13,14 +13,12 @@ const login = async (req, res) => {
       );
       if (passwordMatched) {
         // let look for the account information
-        const otherDetails = await doctorNurse.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();
-        // spreading into the back object to send to the user
+        const otherDetails = await doctorNurse.findOne({ userID: user?._id });
+
         if (otherDetails) {
           return res.json(createOutput(true, {
-            user: {
-              ...user,
-              ...otherDetails
-            }
+           user,
+           otherDetails
           }));
         } else {
           return res.json(createOutput(false, "retry-log in"));
@@ -41,31 +39,39 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     const { email, password, accountType, firstName, lastName, speciality } = req.body;
-    const saved = await userModel.create({
-      email,
-      password,
-      accountType
-    });
-    if (saved) {
-      // saving the doctor or nurse type 
 
-      const NewUserRef = {
-        userID: saved?._id,
-        firstName,
-        lastName,
-        speciality,
-        onduty: false
-      }
+    // first let check the email 
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      const saved = await userModel.create({
+        email,
+        password,
+        accountType
+      });
+      if (saved) {
+        // saving the doctor or nurse type 
 
-      const savedDN = await doctorNurse.create(NewUserRef)
-      if (savedDN) {
-        return res.json(createOutput(true, "successful registered..."));
+        const NewUserRef = {
+          userID: saved?._id,
+          firstName,
+          lastName,
+          speciality,
+          onduty: false
+        }
+
+        const savedDN = await doctorNurse.create(NewUserRef)
+        if (savedDN) {
+          return res.json(createOutput(true, "successful registered..."));
+        } else {
+          return res.json(createOutput(true, "saved the userr but failed to save his/her speciality.."));
+        }
       } else {
-        return res.json(createOutput(true, "saved the userr but failed to save his/her speciality.."));
+        return res.json(createOutput(false, saved));
       }
     } else {
-      return res.json(createOutput(false, saved));
+      return res.json(createOutput(true, "sorry email taken.."));
     }
+
   } catch (error) {
     return res.json(createOutput(false, error.message, true));
   }

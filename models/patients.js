@@ -21,6 +21,12 @@ const patients = mongoose.Schema({
         type: String,
         required: true,
         unique: true
+    },
+    doctorId: {
+        type: mongoose.Types.ObjectId
+    },
+    nurseID: {
+        type: mongoose.Types.ObjectId
     }
 }, {
     timestamps: true
