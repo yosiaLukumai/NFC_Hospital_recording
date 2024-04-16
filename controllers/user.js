@@ -16,6 +16,8 @@ const login = async (req, res) => {
         user.password
       );
       if (passwordMatched) {
+        // let look for the account information
+        const otherDetails = await doctorNurse.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();
         return res.json(createOutput(true, { user }));
       } else {
         return res.json(createOutput(false, "Incorrect Password"));
