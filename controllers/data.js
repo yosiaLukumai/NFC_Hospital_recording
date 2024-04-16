@@ -92,7 +92,7 @@ const FindLastData = async (req, res) => {
         const user = await userModel.findById(id);
         if (user) {
             // tries to retrieve the data
-            let retrievedData = await dataModel.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();;
+            let retrievedData = await dataModel.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();
             if (retrievedData) {
                 return res.json(createOutput(true, retrievedData))
             } else {

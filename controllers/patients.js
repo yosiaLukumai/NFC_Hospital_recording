@@ -28,7 +28,7 @@ const allPatients = async (req, res) => {
     const users = await patientModel.find();
     return res.json(createOutput(true, users));
   } catch (error) {
-    return res.json(false, error.message, true);
+    return res.json(createOutput(false, error.message, true));
   }
 };
 

@@ -1,7 +1,8 @@
 const userModel = require("../models/users");
 const createOutput = require("../utils").createOutput;
-
+const doctorsNurse = require('../models/doctorNurse')
 const utils = require("../utils");
+const doctorNurse = require("../models/doctorNurse");
 const login = async (req, res) => {
   try {
     // let connected = await dbConfig.reconnect();
@@ -30,14 +31,29 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const { email, password, accountType } = req.body;
+    const { email, password, accountType, firstName, lastName, speciality } = req.body;
     const saved = await userModel.create({
       email,
       password,
       accountType
     });
     if (saved) {
-      return res.json(createOutput(true, saved));
+      // saving the doctor or nurse type 
+
+      const NewUserRef = {
+        userID: saved?._id,
+        firstName,
+        lastName,
+        speciality,
+        onduty: false
+      }
+
+      const savedDN = await doctorNurse.create(NewUserRef)
+      if (savedDN) {
+        return res.json(createOutput(true, "successful registered..."));
+      } else {
+        return res.json(createOutput(true, "saved the userr but failed to save his/her speciality.."));
+      }
     } else {
       return res.json(createOutput(false, saved));
     }
@@ -128,51 +144,7 @@ const getUserById = async (req, res) => {
 
 
 
-const buyUnits = async (req, res) => {
-  try {
-    const id = req.params.id;
-    let amount = req.params.amount;
-    const user = await userModel.findById(id);
-    if (user) {
-      let debt;
-      let amounts = ((parseFloat(user.amount) + parseFloat(amount)) - parseFloat(user.debt))
-      if (amounts < 0) {
-        // debt = 0 - amount
-        // amounts = 0 - amount
-        debt = 0 - amounts
-        console.log(typeof(amount));
-        amounts = 0
-        console.log("==>", debt, amounts);
-        let updated = await userModel.updateOne({ _id: id }, { amount: amounts.toString(), debt: debt.toString() })
-        if (updated) {
-          let updatedUser = await userModel.findById(id)
-          return res.json(createOutput(true, updatedUser))
-        } else {
-          return res.json(createOutput(false, 'failed'))
-        }
-      }
-      if (amounts >= 0) {
-        // deni limeisha
-        debt = 0;
-        console.log("==>", debt, amounts);
-        let updated = await userModel.updateOne({ _id: id }, { amount: amounts.toString(), debt: (debt).toString(), tokenId: (user.tokenId + 1) })
-        if (updated) {
-          let updatedUser = await userModel.findById(id)
-          return res.json(createOutput(true, updatedUser))
-        } else {
-          return res.json(createOutput(false, 'failed'))
-        }
-      }
 
-
-    } else {
-      return res.json(createOutput(true, "No such user"));
-    }
-  } catch (error) {
-    console.log(error);
-    return res.json(createOutput(false, error.message, true));
-  }
-}
 module.exports = {
   allUsers,
   login,
@@ -181,5 +153,4 @@ module.exports = {
   register,
   getUserById,
   countUsers,
-  buyUnits,
 };
