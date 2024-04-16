@@ -7,8 +7,6 @@ const medicalHistory = mongoose.Schema({
         type: String,
         required: true,
     },
-    
-    
 }, {
     timestamps: true
 })
