@@ -1,14 +1,10 @@
 const userModel = require("../models/users");
 const createOutput = require("../utils").createOutput;
-const doctorsNurse = require('../models/doctorNurse')
 const utils = require("../utils");
 const doctorNurse = require("../models/doctorNurse");
 const login = async (req, res) => {
   try {
-    // let connected = await dbConfig.reconnect();
-    // console.log(connected);
     const { email, password } = req.body;
-    // query a user from the database
     const user = await userModel.findOne({ email });
     if (user) {
       const passwordMatched = await utils.comparePassword(
@@ -18,7 +14,18 @@ const login = async (req, res) => {
       if (passwordMatched) {
         // let look for the account information
         const otherDetails = await doctorNurse.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();
-        return res.json(createOutput(true, { user }));
+        // spreading into the back object to send to the user
+        if (otherDetails) {
+          return res.json(createOutput(true, {
+            user: {
+              ...user,
+              ...otherDetails
+            }
+          }));
+        } else {
+          return res.json(createOutput(false, "retry-log in"));
+        }
+
       } else {
         return res.json(createOutput(false, "Incorrect Password"));
       }
