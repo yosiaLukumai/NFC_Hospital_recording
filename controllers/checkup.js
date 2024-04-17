@@ -1,7 +1,6 @@
 const createOutput = require("../utils").createOutput;
 const checkUPmodel = require("../models/checkup")
 
-
 const saveCheckUp = async (req, res) => {
     try {
         const { patientID, BloodType, temp } = req.body

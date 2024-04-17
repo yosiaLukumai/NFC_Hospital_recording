@@ -7,3 +7,7 @@ const checkUpRoutes = (app) => {
 
     return app.use(router, "/checkup")
 }
+
+module.exports = {
+    checkUpRoutes
+}

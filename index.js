@@ -6,7 +6,9 @@ const multer = require("multer")
 const path = require("path")
 const userRoutes = require("./routes/users");
 const dataRoutes = require("./routes/data")
+const wardRoutes = require("./routes/ward")
 const patientRoutes = require("./routes/patients")
+const checkupROutes = require("./routes/checkup")
 const cors = require("cors");
 const { Server } = require('socket.io')
 const http = require("http");
@@ -68,9 +70,10 @@ app.post("/data/upload/image", upload.single("image"), function (req, res, next)
 
 // bringing all the routes
 userRoutes.userRoutes(app);
-
 // routes for handling the data
 patientRoutes.patientRoutes(app)
+wardRoutes.wardRoutes(app)
+checkupROutes.checkUpRoutes(app)
 
 const server = http.createServer(app)
 const io = new Server(server, {

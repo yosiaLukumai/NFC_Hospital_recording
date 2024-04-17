@@ -6,7 +6,7 @@ const patientRoutes = (app) => {
     router.post("/register", patientController.register)
     router.patch("/:id", patientController.updateUser)
     router.get("/count/api", patientController.countPatients)
-    return app.use("/user", router)
+    return app.use("/patient", router)
 }
 
 module.exports = {
