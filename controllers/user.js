@@ -1,7 +1,7 @@
 const userModel = require("../models/users");
 const createOutput = require("../utils").createOutput;
 const utils = require("../utils");
-const doctorNurse = require("../models/doctorNurse");
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -12,23 +12,12 @@ const login = async (req, res) => {
         user.password
       );
       if (passwordMatched) {
-        // let look for the account information
-        const otherDetails = await doctorNurse.findOne({ userID: user?._id });
-
-        if (otherDetails) {
-          return res.json(createOutput(true, {
-           user,
-           otherDetails
-          }));
-        } else {
-          return res.json(createOutput(false, "retry-log in"));
+          return res.json(createOutput(true, user));
+        }else {
+          return res.json(createOutput(false, "Incorrect Password"));
         }
-
-      } else {
-        return res.json(createOutput(false, "Incorrect Password"));
-      }
     } else {
-      return res.json(createOutput(false, user));
+      return res.json(createOutput(false, "No such user"));
     }
   } catch (error) {
     console.log(error.message);
@@ -39,45 +28,28 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     const { email, password, accountType, firstName, lastName, speciality } = req.body;
-
-    // first let check the email 
     const user = await userModel.findOne({ email });
     if (!user) {
       const saved = await userModel.create({
         email,
         password,
-        accountType
+        accountType,
+        firstName,
+        lastName,
+        speciality,
+        
       });
-      if (saved) {
-        // saving the doctor or nurse type 
-
-        const NewUserRef = {
-          userID: saved?._id,
-          firstName,
-          lastName,
-          speciality,
-          onduty: false
-        }
-
-        const savedDN = await doctorNurse.create(NewUserRef)
-        if (savedDN) {
+      if(saved) {
           return res.json(createOutput(true, "successful registered..."));
-        } else {
-          return res.json(createOutput(true, "saved the userr but failed to save his/her speciality.."));
         }
-      } else {
-        return res.json(createOutput(false, saved));
+      } 
+      else {
+        return res.json(createOutput(true, "sorry email taken.."));
       }
-    } else {
-      return res.json(createOutput(true, "sorry email taken.."));
-    }
-
   } catch (error) {
     return res.json(createOutput(false, error.message, true));
   }
 };
-
-
 
 const allUsers = async (req, res) => {
   try {

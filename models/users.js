@@ -8,28 +8,42 @@ const users = mongoose.Schema({
         unique: true
     },
     password: {
-        type : String,
-        required : true
+        type: String,
+        required: true
     },
     accountType: {
-        type:String,
+        type: String,
     },
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
+    speciality: {
+        type: String,
+    },
+    onduty: {
+        type: Boolean
+    }
 }, {
     timestamps: true
 })
 
 
-users.pre('save', function(next) {
+users.pre('save', function (next) {
     var user = this;
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
 
     // generate a salt
-    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
         if (err) return next(err);
 
         // hash the password using our new salt
-        bcrypt.hash(user.password, salt, function(err, hash) {
+        bcrypt.hash(user.password, salt, function (err, hash) {
             if (err) return next(err);
             // override the cleartext password with the hashed one
             user.password = hash;
@@ -37,9 +51,9 @@ users.pre('save', function(next) {
         });
     });
 });
-     
-users.methods.comparePassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+
+users.methods.comparePassword = function (candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
         if (err) return cb(err);
         cb(null, isMatch);
     });

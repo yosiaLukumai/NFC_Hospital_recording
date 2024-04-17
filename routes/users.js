@@ -8,7 +8,7 @@ const userRoutes = (app) => {
     router.post("/login", userController.login)
     router.patch("/:id", userController.updateUser)
     router.get("/count/api", userController.countUsers)
-    return app.use("/user", router)
+    return app.use("/users", router)
 }
 
 module.exports = {
