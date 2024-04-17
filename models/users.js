@@ -13,7 +13,6 @@ const users = mongoose.Schema({
     },
     accountType: {
         type:String,
-        unique: true
     },
 }, {
     timestamps: true
