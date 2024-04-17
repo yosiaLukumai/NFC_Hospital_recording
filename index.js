@@ -74,6 +74,7 @@ userRoutes.userRoutes(app);
 patientRoutes.patientRoutes(app)
 wardRoutes.wardRoutes(app)
 checkUpRoutes.checkUpRoutes(app)
+dataRoutes.dataRoutes(app)
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {

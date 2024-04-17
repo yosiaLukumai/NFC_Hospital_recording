@@ -5,7 +5,7 @@ const data = mongoose.Schema({
         type: String,
         required: true,
     },
-    emergenecy: {
+    emergency: {
         type: Boolean,
         required: true
     }

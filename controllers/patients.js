@@ -3,18 +3,23 @@ const patientModel = require("../models/patients")
 
 const register = async (req, res) => {
   try {
-    const { email,firstName, lastName, age,cardID  } = req.body;
-    const saved = await patientModel.create({
-      email,
-      cardID,
-      firstName,
-      lastName,
-      age
-    });
-    if (saved) {
-      return res.json(createOutput(true, saved));
+    const { email, firstName, lastName, age, cardID } = req.body;
+    const findPatient = await patientModel.findOne({ cardID })
+    if (!findPatient) {
+      const saved = await patientModel.create({
+        email,
+        cardID,
+        firstName,
+        lastName,
+        age
+      });
+      if (saved) {
+        return res.json(createOutput(true, saved));
+      } else {
+        return res.json(createOutput(false, saved));
+      }
     } else {
-      return res.json(createOutput(false, saved));
+      return res.json(createOutput(false, "Card ID already registered.."));
     }
   } catch (error) {
     return res.json(createOutput(false, error.message, true));
@@ -37,11 +42,11 @@ const updateUser = async (req, res) => {
     const id = req.params.id;
     // querying the user in the database
     const user = await patientModel.findById(id);
-    const { email,firstName, lastName, age,cardID  } = req.body;
+    const { email, firstName, lastName, age, cardID } = req.body;
     if (user) {
       const updated = await patientModel.updateOne(
         { email: user.email },
-        { email,firstName, lastName, age,cardID  }
+        { email, firstName, lastName, age, cardID }
       );
       if (updated) {
         return res.json(createOutput(true, updated));

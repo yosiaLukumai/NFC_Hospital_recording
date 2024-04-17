@@ -7,15 +7,13 @@ const NotificationModel = require("../models/notification")
 const serveData = async (req, res) => {
     try {
         // let { temp, hum, size, deviceId } = req.body;
-        let { emergenecy, cardID } = req.body;
+        let { emergency, cardID } = req.body;
 
-        const found = await userModel.findOne({ cardID });
-        if (patient) {
-            // save the data to the database
-            const saved = await dataModel.create({ cardID, emergenecy });
+        const found = await patientModel.findOne({ cardID });
+        if (found) {
+            const saved = await dataModel.create({ cardID, emergency });
             if (saved) {
                 // emit the notification 
-
 
                 // fire a socket to notify there is new data...
                 // io.Socket.emit("newData", saved)
@@ -79,8 +77,8 @@ const fetchDataLogs = async (req, res) => {
 const FindLastData = async (req, res) => {
     try {
 
-        const id = req.params.id;
-        const user = await userModel.findById(id);
+        const cardID = req.params.cardID;
+        const user = await patientModel.find({cardID});
         if (user) {
             // tries to retrieve the data
             let retrievedData = await dataModel.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();
