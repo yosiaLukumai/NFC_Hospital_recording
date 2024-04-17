@@ -34,8 +34,23 @@ const findLastCheckUP = async (req, res) => {
 }
 
 
+const allCheckups = async (req, res) => {
+    try {
+        const patientID = req.params.patientID
+        const checkups = checkUPmodel.find({ patientID })
+        if (checkups) {
+            return res.json(createOutput(true, checkups));
+        } else {
+            return res.json(createOutput(false, checkups));
+        }
+    } catch (error) {
+        return res.json(createOutput(false, error?.message, true));
+    }
+}
+
 module.exports = {
     saveCheckUp,
-    findLastCheckUP
+    findLastCheckUP,
+    allCheckups
 }
 

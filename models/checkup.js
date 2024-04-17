@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const checkup = mongoose.Schema({
     patientID: {
-        type: String
+        type: mongoose.Types.ObjectId
     },
     BloodType: {
         type: String,

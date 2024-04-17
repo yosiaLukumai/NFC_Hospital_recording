@@ -76,7 +76,6 @@ const fetchDataLogs = async (req, res) => {
     }
 }
 
-
 const FindLastData = async (req, res) => {
     try {
 
