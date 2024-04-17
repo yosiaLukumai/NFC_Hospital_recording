@@ -16,7 +16,7 @@ const register = async (req, res) => {
       if (saved) {
         return res.json(createOutput(true, saved));
       } else {
-        return res.json(createOutput(false, saved));
+        return res.json(createOutput(false, "failed to save the user"));
       }
     } else {
       return res.json(createOutput(false, "Card ID already registered.."));
@@ -51,7 +51,7 @@ const updateUser = async (req, res) => {
       if (updated) {
         return res.json(createOutput(true, updated));
       } else {
-        return res.json(createOutput(true, "failed to update the patient"));
+        return res.json(createOutput(false, "failed to update the patient"));
       }
     }
     return res.json(createOutput(false, "failed to get user with given id"));
@@ -98,7 +98,7 @@ const getPatientById = async (req, res) => {
     if (user) {
       return res.json(createOutput(true, user));
     } else {
-      return res.json(createOutput(true, "No such Patient"));
+      return res.json(createOutput(false, "No such Patient"));
     }
   } catch (error) {
     return res.json(createOutput(false, error.message, true));

@@ -44,7 +44,7 @@ const register = async (req, res) => {
         }
       } 
       else {
-        return res.json(createOutput(true, "sorry email taken.."));
+        return res.json(createOutput(false, "sorry email taken.."));
       }
   } catch (error) {
     return res.json(createOutput(false, error.message, true));
@@ -74,7 +74,7 @@ const updateUser = async (req, res) => {
       if (updated) {
         return res.json(createOutput(true, updated));
       } else {
-        return res.json(createOutput(true, "failed to update the user"));
+        return res.json(createOutput(false, "failed to update the user"));
       }
     }
     return res.json(createOutput(false, "failed to get user with given id"));
@@ -121,7 +121,7 @@ const getUserById = async (req, res) => {
     if (user) {
       return res.json(createOutput(true, user));
     } else {
-      return res.json(createOutput(true, "No such user"));
+      return res.json(createOutput(false, "No such user"));
     }
   } catch (error) {
     return res.json(createOutput(false, error.message, true));
