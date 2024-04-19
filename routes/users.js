@@ -8,6 +8,7 @@ const userRoutes = (app) => {
     router.post("/login", userController.login)
     router.patch("/:id", userController.updateUser)
     router.get("/count/api", userController.countUsers)
+    router.get("/specific/:nature", userController.specificSpeciallity)
     return app.use("/users", router)
 }
 

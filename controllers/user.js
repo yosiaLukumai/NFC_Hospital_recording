@@ -129,7 +129,21 @@ const getUserById = async (req, res) => {
 };
 
 
+const specificSpeciallity = async (req, res) => {
+  try {
+    const nature = req.params.nature
+    const data = await userModel.find({accountType: nature})
+    // console.log("Nature: ", nature);
+    if(data) {
+      return res.json(createOutput(true, data));
+    }else {
+      return res.json(createOutput(false, data));
 
+    }
+  } catch (error) {
+    return res.json(createOutput(false, error.message, true));
+  }
+}
 
 
 module.exports = {
@@ -140,4 +154,5 @@ module.exports = {
   register,
   getUserById,
   countUsers,
+  specificSpeciallity
 };
