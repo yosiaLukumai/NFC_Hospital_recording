@@ -3,7 +3,7 @@ const patientModel = require("../models/patients")
 
 const register = async (req, res) => {
   try {
-    const { email, firstName, lastName, age, cardID } = req.body;
+    const { email, firstName, lastName,wardNumber, age, cardID } = req.body;
     const findPatient = await patientModel.findOne({ cardID })
     if (!findPatient) {
       const saved = await patientModel.create({
@@ -11,6 +11,7 @@ const register = async (req, res) => {
         cardID,
         firstName,
         lastName,
+        wardNumber,
         age
       });
       if (saved) {
@@ -76,8 +77,8 @@ const countPatients = async (req, res) => {
 
 const deletePatient = async (req, res) => {
   try {
-    const email = req.params.email;
-    const deleted = await patientModel.deleteOne({ email });
+    const cardID = req.params.cardID;
+    const deleted = await patientModel.deleteOne({ cardID });
     if (deleted) {
       return res.json(createOutput(true, deleted));
     } else {

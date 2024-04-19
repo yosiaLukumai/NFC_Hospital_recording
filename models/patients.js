@@ -8,6 +8,9 @@ const patients = mongoose.Schema({
         type: String,
         required: true,
     },
+    wardNumber: {
+        type: String,
+    },
     age: {
         type: Number,
         required: true,
