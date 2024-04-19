@@ -1,5 +1,5 @@
 const wardModel = require("../models/ward")
-
+const createOutput = require("../utils").createOutput;
 
 const register = async (req, res) => {
     try {
