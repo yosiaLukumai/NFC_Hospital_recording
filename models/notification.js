@@ -1,8 +1,7 @@
 const mongoose = require("mongoose")
 const Notification = mongoose.Schema({
-    patientID: {
-        type: mongoose.Types.ObjectId,
-        required: true,
+    TargettedUser: {
+        type: mongoose.Types.ObjectId
     },
     cardID: {
         type: String,
@@ -15,7 +14,6 @@ const Notification = mongoose.Schema({
     received: {
         type: Boolean
     }
-
 }, {
     timestamps: true
 })

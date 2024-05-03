@@ -14,9 +14,20 @@ const serveData = async (req, res) => {
             const saved = await dataModel.create({ cardID, emergency });
             if (saved) {
                 // emit the notification 
-
                 // fire a socket to notify there is new data...
                 // io.Socket.emit("newData", saved)
+                const savedNotification = await NotificationModel.create({
+                    TargettedUser: found?.nurseID,
+                    cardID,
+                    msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${found?.wardNumber} Has problem please check him/her`,
+                    received: false
+                })
+                if(savedNotification) {
+                    io.Socket.emit("notification", {
+                        idUser: found?.nurseID,
+                        data: savedNotification
+                    })
+                }
                 return res.json({ status: 1, message: "Data saved sucessfully" })
             } else {
                 return res.json({ status: 0, message: "Failed to save the data" })
@@ -35,7 +46,7 @@ const serveGraphData = async (req, res) => {
         const deviceId = req.params.deviceId
         const patient = await userModel.findOne({ deviceId: String(deviceId) });
         if (patient) {
-            const fiveLastData = await dataModel.find({userId: found?._id}, "temp hum size createdAt", { createdAt: -1 }).limit(6).exec();
+            const fiveLastData = await dataModel.find({ userId: found?._id }, "temp hum size createdAt", { createdAt: -1 }).limit(6).exec();
             return res.json(createOutput(true, fiveLastData))
         } else {
             return res.json({ status: 0, message: "Device not registered..." })
@@ -78,7 +89,7 @@ const FindLastData = async (req, res) => {
     try {
 
         const cardID = req.params.cardID;
-        const user = await patientModel.find({cardID});
+        const user = await patientModel.find({ cardID });
         if (user) {
             // tries to retrieve the data
             let retrievedData = await dataModel.findOne({ userId: user._id }, null, { sort: { createdAt: -1 }, limit: 1 }).exec();
@@ -103,7 +114,7 @@ const SaveImages = async (req, res) => {
         const found = await userModel.findOne({ deviceId: String(deviceId) });
         if (found) {
             // 
-        }else {
+        } else {
             return res.json(createOutput(false, "No such device Id", true));
         }
 

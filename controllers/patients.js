@@ -1,9 +1,11 @@
 const createOutput = require("../utils").createOutput;
 const patientModel = require("../models/patients")
+const notification = require("../models/notification")
+const io = require("../index")
 
 const register = async (req, res) => {
   try {
-    const { email, firstName, lastName,wardNumber, age, cardID } = req.body;
+    const { email, firstName, lastName, wardNumber, age, cardID, doctorId, nurseID } = req.body;
     const findPatient = await patientModel.findOne({ cardID })
     if (!findPatient) {
       const saved = await patientModel.create({
@@ -12,9 +14,36 @@ const register = async (req, res) => {
         firstName,
         lastName,
         wardNumber,
-        age
+        age,
+        nurseID,
+        doctorId
       });
       if (saved) {
+        const savedNurseNotification = await notification.create({
+          TargettedUser: nurseID,
+          cardID,
+          msg: `Assigned new Patient with name ${firstName}-${lastName}`,
+          received: false
+        })
+
+        const savedDoctorotification = await notification.create({
+          TargettedUser: doctorId,
+          cardID,
+          msg: `Assigned new Patient with name ${firstName}-${lastName}`,
+          received: false
+        })
+        if (savedDoctorotification) {
+          io.Socket.emit("notification", {
+            idUser: doctorId,
+            data: savedDoctorotification
+          })
+        }
+        if (savedNurseNotification) {
+          io.Socket.emit("notification", {
+            idUser: nurseID,
+            data: savedDoctorotification
+          })
+        }
         return res.json(createOutput(true, saved));
       } else {
         return res.json(createOutput(false, "failed to save the user"));

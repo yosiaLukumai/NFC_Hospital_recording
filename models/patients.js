@@ -1,5 +1,9 @@
 const mongoose = require("mongoose")
 const patients = mongoose.Schema({
+    email: {
+        type: String,
+        required: true
+    },
     firstName: {
         type: String,
         required: true,
@@ -21,10 +25,10 @@ const patients = mongoose.Schema({
         unique: true
     },
     doctorId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
     },
     nurseID: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
     }
 }, {
     timestamps: true
