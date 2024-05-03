@@ -91,9 +91,9 @@ io.on("connect", (socket) => {
     console.log(`A user with ID: ${ID} is asking for unread notification`)
     let last_notification = await notificationCOntroller.getUnReadNotification(ID)
     if (!last_notification.error) {
-      socket.emit("notification", {
+      socket.emit("notifications", {
         idUser: ID,
-        data: last_notification.notification
+        data: last_notification.notification // array
       })
     }
   })
