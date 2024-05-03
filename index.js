@@ -14,6 +14,7 @@ const { Server } = require('socket.io')
 const http = require("http");
 const { createOutput } = require("./utils");
 require("dotenv").config();
+const notificationCOntroller = require("./controllers/notification")
 // database configuration
 dbConfig.connectDb();
 
@@ -85,11 +86,24 @@ const io = new Server(server, {
 
 io.on("connect", (socket) => {
   console.log('connected')
+
+  socket.on("serchNotification", async (ID) => {
+    console.log(`A user with ID: ${ID} is asking for unread notification`)
+    let last_notification = await notificationCOntroller.getUnReadNotification(ID)
+    if (!last_notification.error) {
+      socket.emit("notification", {
+        idUser: ID,
+        data: last_notification.notification
+      })
+    }
+  })
   // console.log(socket);
   socket.on("disconnect", () => {
     console.log("client disconnected..");
   })
 })
+
+
 server.listen(process.env.PORT, () => {
   console.log(`App running and connected to port ${process.env.PORT}`);
 });
