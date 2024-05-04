@@ -1,9 +1,5 @@
 const mongoose = require("mongoose")
 const patients = mongoose.Schema({
-    email: {
-        type: String,
-        required: true
-    },
     firstName: {
         type: String,
         required: true,

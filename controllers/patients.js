@@ -5,11 +5,10 @@ const io = require("../index")
 
 const register = async (req, res) => {
   try {
-    const { email, firstName, lastName, wardNumber, age, cardID, doctorId, nurseID } = req.body;
+    const {firstName, lastName, wardNumber, age, cardID, doctorId, nurseID } = req.body;
     const findPatient = await patientModel.findOne({ cardID })
     if (!findPatient) {
       const saved = await patientModel.create({
-        email,
         cardID,
         firstName,
         lastName,
