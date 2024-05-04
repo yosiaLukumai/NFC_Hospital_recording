@@ -2,7 +2,7 @@ const notification = require("../models/notification");
 
 const getUnReadNotification = async (userID) => {
     try {
-        const data = await notification.find({ TargettedUser: userID, read: false })
+        const data = await notification.find({ TargettedUser: userID, received: false })
         if (data) {
             return { error: false, notification: data }
         } else {
