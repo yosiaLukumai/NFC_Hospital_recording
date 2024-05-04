@@ -12,7 +12,7 @@ const checkUpRoutes = require("./routes/checkup")
 const cors = require("cors");
 const { Server } = require('socket.io')
 const http = require("http");
-const { createOutput } = require("./utils");
+const { createOutput } = require("./utils").createOutput;
 require("dotenv").config();
 const notificationCOntroller = require("./controllers/notification")
 // database configuration
@@ -97,6 +97,19 @@ io.on("connect", (socket) => {
         data: last_notification.notification // array
       })
     }
+  })
+
+  socket.on("read", async (ID) => {
+    console.log(`Deleting seen Notification: ${ID}`)
+    let successFlag = await notificationCOntroller.DeleteReadNotification(ID)
+    console.log(successFlag);
+    // console.log("Last Notification:  ", last_notification);
+    // if (!last_notification.error) {
+    //   socket.emit("notifications", {
+    //     idUser: ID,
+    //     data: last_notification.notification // array
+    //   })
+    // }
   })
   // console.log(socket);
   socket.on("disconnect", () => {

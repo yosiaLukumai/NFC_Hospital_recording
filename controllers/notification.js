@@ -14,7 +14,23 @@ const getUnReadNotification = async (userID) => {
     }
 }
 
+const DeleteReadNotification = async (id) => {
+    try {
+        const data = await notification.updateOne({ _id: id },
+            { received: true })
+        if (data) {
+            return { error: false, notification: data }
+        } else {
+            return { error: false, notification: [] }
+        }
+    } catch (error) {
+        console.log("Error in ensuring the notication is deleted ", error);
+        return { error: true, notification: [] }
+    }
+}
+
 
 module.exports = {
-    getUnReadNotification
+    getUnReadNotification,
+    DeleteReadNotification
 };
