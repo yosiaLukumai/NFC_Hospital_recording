@@ -16,21 +16,23 @@ const serveData = async (req, res) => {
                 // emit the notification 
                 // fire a socket to notify there is new data...
                 // io.Socket.emit("newData", saved)
-                if(emergency) {
+                let EmergencySource = emergency == "BUTTON" ? "Calls for assistance" : emergency == "SEIZURE" ? "Has Seizure" : "Machine Alert";
+                console.log(EmergencySource);
+                if (true) {
                     const savedNotification = await NotificationModel.create({
                         TargettedUser: found?.nurseID,
                         cardID,
-                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${found?.wardNumber} Has problem please check him/her`,
+                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${found?.wardNumber} ${EmergencySource}`,
                         received: false
                     })
-                    if(savedNotification) {
+                    if (savedNotification) {
                         io.Socket.emit("notification", {
                             idUser: found?.nurseID,
                             data: savedNotification
                         })
                     }
                 }
-        
+
                 return res.json({ status: 1, message: "Data saved sucessfully" })
             } else {
                 return res.json({ status: 0, message: "Failed to save the data" })
