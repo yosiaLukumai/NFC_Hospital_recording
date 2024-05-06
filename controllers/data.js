@@ -3,6 +3,7 @@ const userModel = require("./../models/users");
 const patientModel = require("../models/patients")
 const createOutput = require("../utils").createOutput;
 const io = require("./../index")
+const wardModel = require("../models/ward")
 const NotificationModel = require("../models/notification")
 const serveData = async (req, res) => {
     try {
@@ -16,14 +17,23 @@ const serveData = async (req, res) => {
                 // emit the notification 
                 // fire a socket to notify there is new data...
                 // io.Socket.emit("newData", saved)
+                // let find  the ward name for the
                 let EmergencySource = emergency == "BUTTON" ? "Calls for assistance" : emergency == "SEIZURE" ? "Has Seizure" : "Machine Alert";
                 console.log(EmergencySource);
+                let foundWard = await wardModel.findById(found?.wardNumber)
+                let wardName;
+                if (foundWard?.wardNumber) {
+                    wardName = foundWard?.wardNumber
+                } else {
+                    wardName = found?.wardNumber;
+                }
+                console.log(wardName);
                 console.log("The patient Details:  ", found);
                 if (true) {
                     const savedNotification = await NotificationModel.create({
                         TargettedUser: found?.nurseID,
                         cardID,
-                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${found?.wardNumber}-${EmergencySource}`,
+                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${wardName}-${EmergencySource}`,
                         received: false
                     })
                     if (savedNotification) {
