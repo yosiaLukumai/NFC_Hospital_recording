@@ -18,11 +18,12 @@ const serveData = async (req, res) => {
                 // io.Socket.emit("newData", saved)
                 let EmergencySource = emergency == "BUTTON" ? "Calls for assistance" : emergency == "SEIZURE" ? "Has Seizure" : "Machine Alert";
                 console.log(EmergencySource);
+                console.log("The patient Details:  ", found);
                 if (true) {
                     const savedNotification = await NotificationModel.create({
                         TargettedUser: found?.nurseID,
                         cardID,
-                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${found?.wardNumber} ${EmergencySource}`,
+                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${found?.wardNumber}-${EmergencySource}`,
                         received: false
                     })
                     if (savedNotification) {
