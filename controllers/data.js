@@ -19,7 +19,7 @@ const serveData = async (req, res) => {
                 // io.Socket.emit("newData", saved)
                 // let find  the ward name for the
                 let EmergencySource = emergency == "BUTTON" ? "Calls for assistance" : emergency == "SEIZURE" ? "Has Seizure" : "Machine Alert";
-                console.log(EmergencySource);
+                // console.log(EmergencySource);
                 let foundWard = await wardModel.findById(found?.wardNumber)
                 let wardName;
                 if (foundWard?.wardNumber) {
@@ -27,8 +27,8 @@ const serveData = async (req, res) => {
                 } else {
                     wardName = found?.wardNumber;
                 }
-                console.log(wardName);
-                console.log("The patient Details:  ", found);
+                // console.log(wardName);
+                // console.log("The patient Details:  ", found);
                 if (true) {
                     const savedNotification = await NotificationModel.create({
                         TargettedUser: found?.nurseID,
@@ -36,9 +36,21 @@ const serveData = async (req, res) => {
                         msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${wardName}-${EmergencySource}`,
                         received: false
                     })
+                    const savedNotificationDOC = await NotificationModel.create({
+                        TargettedUser: found?.doctorId,
+                        cardID,
+                        msg: `Patient: ${found?.firstName} - ${found?.lastName} at Ward No: ${wardName}-${EmergencySource}`,
+                        received: false
+                    })
                     if (savedNotification) {
                         io.Socket.emit("notification", {
                             idUser: found?.nurseID,
+                            data: savedNotification
+                        })
+                    }
+                    if (savedNotificationDOC) {
+                        io.Socket.emit("notification", {
+                            idUser: found?.doctorId,
                             data: savedNotification
                         })
                     }
