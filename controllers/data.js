@@ -51,7 +51,7 @@ const serveData = async (req, res) => {
                     if (savedNotificationDOC) {
                         io.Socket.emit("notification", {
                             idUser: found?.doctorId,
-                            data: savedNotification
+                            data: savedNotificationDOC
                         })
                     }
                 }
